@@ -3,12 +3,16 @@ package com.w20.databasedemo;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -89,15 +93,76 @@ public class EmployeeAdapter extends ArrayAdapter
         alertDialog.show();
     }
 
-    private void updateEmployee(Employee employee)
+    private void updateEmployee(final Employee employee)
     {
-        String updatesql = "UPDATE employee SET name = ?, department = ?, joiningdate = ?, salary = ? WHERE id = ?";
-        mDatabase.execSQL(updatesql);
+        AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View v = inflater.inflate(R.layout.dialog_layout_update_employee,null);
+        alert.setView(v);
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.show();
+
+        final EditText etName = v.findViewById(R.id.editTextName);
+        final EditText etSalary = v.findViewById(R.id.editTextSalary);
+        final Spinner spinner = v.findViewById(R.id.spinnerDepartment);
+
+        etName.setText(employee.getName());
+        etSalary.setText(String.valueOf(employee.getSalary()));
+
+        v.findViewById(R.id.btnUpdateEmployee).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = etName.getText().toString().trim();
+                String salary = etSalary.getText().toString().trim();
+                String dept = spinner.getSelectedItem().toString();
+
+                if(name.isEmpty())
+                {
+                    etName.setError("Name Field is Mandatory");
+                    etName.requestFocus();
+                    return;
+                }
+
+                if(salary.isEmpty())
+                {
+                    etSalary.setError("Salary Field is Mandatory");
+                    etSalary.requestFocus();
+                    return;
+                }
+
+                String updatesql = "UPDATE employee SET name = ?, department = ?, salary = ? WHERE id = ?";
+                mDatabase.execSQL(updatesql, new String[]{name, dept, salary, String.valueOf(employee.getId())});
+                Toast.makeText(mContext, "Employee Updated", Toast.LENGTH_SHORT).show();
+                loadEmployees();
+                alertDialog.dismiss();
+            }
+        });
+
+
 
 
     }
 
     private void loadEmployees()
     {
+        String sql = "SELECT * employee";
+        Cursor cursor = mDatabase.rawQuery(sql, null);
+
+        if (cursor.moveToFirst()) {
+            employees.clear();
+
+            do {
+                employees.add(new Employee(
+                        cursor.getInt(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getString(3),
+                        cursor.getDouble(4)
+                ));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        notifyDataSetChanged();
     }
 }
