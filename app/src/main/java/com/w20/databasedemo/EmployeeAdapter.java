@@ -145,11 +145,12 @@ public class EmployeeAdapter extends ArrayAdapter
 
     private void loadEmployees()
     {
-        String sql = "SELECT * employee";
+        String sql = "SELECT *  FROM employee";
         Cursor cursor = mDatabase.rawQuery(sql, null);
 
+        employees.clear();
         if (cursor.moveToFirst()) {
-            employees.clear();
+
 
             do {
                 employees.add(new Employee(
