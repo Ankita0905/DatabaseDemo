@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class EmployeeAdapter extends ArrayAdapter
@@ -108,6 +109,13 @@ public class EmployeeAdapter extends ArrayAdapter
 
         etName.setText(employee.getName());
         etSalary.setText(String.valueOf(employee.getSalary()));
+
+        String[] departmentArray = mContext.getResources().getStringArray(R.array.departments);
+        int position = Arrays.asList(departmentArray).indexOf(employee.getDept());
+
+        etName.setText(employee.getName());
+        etSalary.setText(String.valueOf(employee.getSalary()));
+        spinner.setSelection(position);
 
         v.findViewById(R.id.btnUpdateEmployee).setOnClickListener(new View.OnClickListener() {
             @Override
