@@ -2,6 +2,7 @@ package com.w20.databasedemo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void createTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS employees (" +
+        String sql = "CREATE TABLE IF NOT EXISTS employee (" +
                 "id INTEGER NOT NULL CONSTRAINT employee_pk PRIMARY KEY AUTOINCREMENT, " +
                 "name VARCHAR(200) NOT NULL, " +
                 "department VARCHAR(200) NOT NULL, " +
@@ -58,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.tvViewEmployee:
                 // start activity to another activity to see the list of employees
+                Intent intent = new Intent(MainActivity.this, EmployeeActivity.class);
+                startActivity(intent);
 
                 break;
         }
@@ -85,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        String sql = "INSERT INTO employees (name, department, joiningdate, salary)" +
+        String sql = "INSERT INTO employee (name, department, joiningdate, salary)" +
                 "VALUES (?, ?, ?, ?)";
         mDatabase.execSQL(sql, new String[]{name, dept, joiningDate, salary});
         Toast.makeText(this, "Employee added", Toast.LENGTH_SHORT).show();

@@ -32,7 +32,7 @@ public class EmployeeActivity extends AppCompatActivity {
     }
 
     private void loadEmployees() {
-        String sql = "SELECT * FROM employees";
+        String sql = "SELECT * FROM employee";
         Cursor cursor = mDatabase.rawQuery(sql, null);
 
         if (cursor.moveToFirst()) {
@@ -49,6 +49,8 @@ public class EmployeeActivity extends AppCompatActivity {
 
             // show items in a listView
             // we use a custom adapter to show employees
+            EmployeeAdapter employeeAdapter = new EmployeeAdapter(this,R.layout.list_layout_employee,employeeList,mDatabase);
+            listView.setAdapter(employeeAdapter);
 
 
         }
