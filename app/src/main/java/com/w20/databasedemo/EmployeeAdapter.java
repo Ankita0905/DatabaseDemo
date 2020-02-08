@@ -25,9 +25,10 @@ public class EmployeeAdapter extends ArrayAdapter
     Context mContext;
     int layoutRes;
     List<Employee> employees;
-    SQLiteDatabase mDatabase;
+   // SQLiteDatabase mDatabase;
+    DatabaseHelper mDatabase;
 
-    public EmployeeAdapter(@NonNull Context mContext, int layoutRes, List<Employee> employees, SQLiteDatabase mDatabase)
+    public EmployeeAdapter(@NonNull Context mContext, int layoutRes, List<Employee> employees, DatabaseHelper mDatabase)
     {
         super(mContext, layoutRes, employees);
         this.mContext = mContext;
@@ -77,9 +78,14 @@ public class EmployeeAdapter extends ArrayAdapter
         builder.setPositiveButton("Yes 👍", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                /*
                 String sql = "DELETE from employee WHERE id=?";
                 mDatabase.execSQL(sql, new Integer[]{employee.getId()});
                 loadEmployees();
+
+                 */
+                if(mDatabase.deleteEmployee(employee.getId()))
+                    loadEmployees();
             }
         });
 
@@ -138,10 +144,19 @@ public class EmployeeAdapter extends ArrayAdapter
                     return;
                 }
 
+                /*
                 String updatesql = "UPDATE employee SET name = ?, department = ?, salary = ? WHERE id = ?";
                 mDatabase.execSQL(updatesql, new String[]{name, dept, salary, String.valueOf(employee.getId())});
                 Toast.makeText(mContext, "Employee Updated", Toast.LENGTH_SHORT).show();
-                loadEmployees();
+
+                 */
+
+                if(mDatabase.updateEmployee(employee.getId(),name, dept, Double.parseDouble(salary))) {
+                    Toast.makeText(mContext, "Employee Updated", Toast.LENGTH_SHORT).show();
+                    loadEmployees();
+                }
+                else
+                    Toast.makeText(mContext, "Employee not Updated", Toast.LENGTH_SHORT).show();
                 alertDialog.dismiss();
             }
         });
@@ -153,9 +168,13 @@ public class EmployeeAdapter extends ArrayAdapter
 
     private void loadEmployees()
     {
+        /*
         String sql = "SELECT *  FROM employee";
         Cursor cursor = mDatabase.rawQuery(sql, null);
 
+         */
+
+        Cursor cursor = mDatabase.getAllEMployees();
         employees.clear();
         if (cursor.moveToFirst()) {
 

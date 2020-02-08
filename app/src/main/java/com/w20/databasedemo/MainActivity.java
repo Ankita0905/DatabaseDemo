@@ -17,9 +17,10 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     // in order to use database you should give a name to your database
-    public static final String DATABASE_NAME = "myDatabase";
-    SQLiteDatabase mDatabase;
+//    public static final String DATABASE_NAME = "myDatabase";
+//    SQLiteDatabase mDatabase;
 
+    DatabaseHelper mDatabase;
     EditText editTextName, editTextSalary;
     Spinner spinnerDept;
 
@@ -37,19 +38,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.tvViewEmployee).setOnClickListener(this);
 
         // in order to open or create database we use the following code
-        mDatabase = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
-        createTable();
+//        mDatabase = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
+       // createTable();
+        mDatabase = new DatabaseHelper(this);
     }
 
-    private void createTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS employee (" +
-                "id INTEGER NOT NULL CONSTRAINT employee_pk PRIMARY KEY AUTOINCREMENT, " +
-                "name VARCHAR(200) NOT NULL, " +
-                "department VARCHAR(200) NOT NULL, " +
-                "joiningdate DATETIME NOT NULL, " +
-                "salary DOUBLE NOT NULL);";
-        mDatabase.execSQL(sql);
-    }
+//    private void createTable() {
+//        String sql = "CREATE TABLE IF NOT EXISTS employee (" +
+//                "id INTEGER NOT NULL CONSTRAINT employee_pk PRIMARY KEY AUTOINCREMENT, " +
+//                "name VARCHAR(200) NOT NULL, " +
+//                "department VARCHAR(200) NOT NULL, " +
+//                "joiningdate DATETIME NOT NULL, " +
+//                "salary DOUBLE NOT NULL);";
+//        mDatabase.execSQL(sql);
+    //}
 
 
     @Override
@@ -88,10 +90,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             editTextSalary.requestFocus();
             return;
         }
-
+/*
         String sql = "INSERT INTO employee (name, department, joiningdate, salary)" +
                 "VALUES (?, ?, ?, ?)";
         mDatabase.execSQL(sql, new String[]{name, dept, joiningDate, salary});
         Toast.makeText(this, "Employee added", Toast.LENGTH_SHORT).show();
+ */
+
+        if(mDatabase.addEmployee(name,dept,joiningDate,Double.parseDouble(salary)))
+            Toast.makeText(this, "Employee added", Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(this, "Employee not added", Toast.LENGTH_SHORT).show();
+
+
     }
 }
