@@ -51,7 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    boolean addEmployee(String name,String dept, String joiningDate, double salary)
+    boolean addEmployee(String name,String dept, String joiningDate, double salary) 
     {
         //in order to insert items into database, we need a writable database
         //this method returns a SQLite database instance
